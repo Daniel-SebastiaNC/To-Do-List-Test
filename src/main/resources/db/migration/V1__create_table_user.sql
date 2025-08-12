@@ -1,0 +1,6 @@
+CREATE TABLE tb_user (
+    id UUID PRIMARY KEY,
+    username VARCHAR(50) UNIQUE NOT NULL,
+    email VARCHAR(50) UNIQUE NOT NULL,
+    password VARCHAR(250) NOT NULL
+);
