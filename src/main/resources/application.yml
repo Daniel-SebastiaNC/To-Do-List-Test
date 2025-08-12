@@ -1,0 +1,13 @@
+spring:
+  application:
+    name: To-Do_List
+
+  datasource:
+    url: jdbc:postgresql://localhost:5431/${DB_NAME}
+    username: ${DB_USER}
+    password: ${DB_PASSWORD}
+    driver-class-name: org.postgresql.Driver
+
+    jpa:
+      database-platform: org.hibernate.dialect.PostgreSQLDialect
+      show-sql: true
