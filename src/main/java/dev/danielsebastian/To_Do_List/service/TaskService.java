@@ -3,6 +3,7 @@ package dev.danielsebastian.To_Do_List.service;
 import dev.danielsebastian.To_Do_List.dto.task.TaskRequest;
 import dev.danielsebastian.To_Do_List.dto.task.TaskResponse;
 import dev.danielsebastian.To_Do_List.dto.user.JWTUserData;
+import dev.danielsebastian.To_Do_List.exception.DataNotFoundException;
 import dev.danielsebastian.To_Do_List.mapper.TaskMapper;
 import dev.danielsebastian.To_Do_List.model.Task;
 import dev.danielsebastian.To_Do_List.model.User;
@@ -34,7 +35,7 @@ public class TaskService {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         JWTUserData principal = (JWTUserData) auth.getPrincipal();
 
-        User user = userRepository.findById(principal.id()).orElseThrow(() -> new RuntimeException("errou"));
+        User user = userRepository.findById(principal.id()).orElseThrow(() -> new DataNotFoundException("User not found"));
 
         task.setUsers(
                 Arrays.asList(
