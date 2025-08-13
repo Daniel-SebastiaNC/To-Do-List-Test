@@ -5,6 +5,8 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 
 import java.io.Serial;
 import java.io.Serializable;
@@ -13,7 +15,7 @@ import java.util.List;
 import java.util.UUID;
 
 @Entity
-@Table(name = "tb_table")
+@Table(name = "tb_task")
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
@@ -32,6 +34,8 @@ public class Task implements Serializable {
     private LocalDateTime deadline;
 
     @Enumerated(EnumType.STRING)
+    @JdbcTypeCode(SqlTypes.NAMED_ENUM)
+    @Column(columnDefinition = "progress_status")
     private ProgressStatus status;
 
     private short priority;
