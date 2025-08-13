@@ -10,6 +10,8 @@ import dev.danielsebastian.To_Do_List.repository.TaskRepository;
 import dev.danielsebastian.To_Do_List.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -44,10 +46,10 @@ public class TaskService {
         return taskMapper.toTaskResponse(save);
     }
 
-    /*public List<TaskResponse> getAllTasks() {
-        List<Task> all = taskRepository.findAll();
-
-    }*/
+    public List<TaskResponse> getAllTasks(Pageable pageable) {
+        Page<Task> all = taskRepository.findAllByOrderByPriorityDesc(pageable);
+        return all.stream().map(taskMapper::toTaskResponse).toList();
+    }
 
 
 }
