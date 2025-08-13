@@ -1,5 +1,6 @@
 package dev.danielsebastian.To_Do_List.service;
 
+import dev.danielsebastian.To_Do_List.controller.TaskUpdateStatus;
 import dev.danielsebastian.To_Do_List.dto.task.TaskRequest;
 import dev.danielsebastian.To_Do_List.dto.task.TaskResponse;
 import dev.danielsebastian.To_Do_List.dto.user.JWTUserData;
@@ -21,6 +22,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -66,5 +68,12 @@ public class TaskService {
         return all.stream().map(taskMapper::toTaskResponse).toList();
     }
 
+    @Transactional
+    public TaskResponse updateStatusTask(UUID id, TaskUpdateStatus taskUpdateStatus) {
+        Task task = taskRepository.findById(id).orElseThrow(() -> new DataNotFoundException("Task not found"));
+        task.setStatus(taskUpdateStatus.status());
+        Task save = taskRepository.save(task);
+        return taskMapper.toTaskResponse(save);
+    }
 
 }

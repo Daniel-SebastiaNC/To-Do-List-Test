@@ -2,7 +2,6 @@ package dev.danielsebastian.To_Do_List.controller;
 
 import dev.danielsebastian.To_Do_List.dto.task.TaskRequest;
 import dev.danielsebastian.To_Do_List.dto.task.TaskResponse;
-import dev.danielsebastian.To_Do_List.enums.ProgressStatus;
 import dev.danielsebastian.To_Do_List.service.TaskService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -11,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/task")
@@ -33,5 +33,10 @@ public class TaskController {
     ) {
 
         return ResponseEntity.ok(taskService.getAllTasks(pageable, status, priority, deadline));
+    }
+
+    @PatchMapping("/update-status/{id}")
+    public ResponseEntity<TaskResponse> updateTaskStatus(@PathVariable UUID id, @RequestBody TaskUpdateStatus taskUpdateStatus) {
+        return ResponseEntity.ok(taskService.updateStatusTask(id, taskUpdateStatus));
     }
 }
