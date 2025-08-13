@@ -32,6 +32,9 @@ public class User implements Serializable, UserDetails {
 
     private String password;
 
+    @ManyToMany(mappedBy = "users")
+    private List<Task> tasks;
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of();
