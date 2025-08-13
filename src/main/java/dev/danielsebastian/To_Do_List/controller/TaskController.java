@@ -35,9 +35,9 @@ public class TaskController {
         return ResponseEntity.ok(taskService.getAllTasks(pageable, status, priority, deadline));
     }
 
-    @PatchMapping("/update-status/{id}")
-    public ResponseEntity<TaskResponse> updateTaskStatus(@PathVariable UUID id, @RequestBody TaskUpdateStatus taskUpdateStatus) {
-        return ResponseEntity.ok(taskService.updateStatusTask(id, taskUpdateStatus));
+    @PutMapping("/update/{id}")
+    public ResponseEntity<TaskResponse> updateTaskStatus(@PathVariable UUID id, @RequestBody TaskRequest task) {
+        return ResponseEntity.ok(taskService.updateTask(id, task));
     }
 
     @DeleteMapping("/delete/{id}")

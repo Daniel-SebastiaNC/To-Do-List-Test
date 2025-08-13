@@ -1,9 +1,9 @@
 package dev.danielsebastian.To_Do_List.service;
 
-import dev.danielsebastian.To_Do_List.controller.TaskUpdateStatus;
 import dev.danielsebastian.To_Do_List.dto.task.TaskRequest;
 import dev.danielsebastian.To_Do_List.dto.task.TaskResponse;
 import dev.danielsebastian.To_Do_List.dto.user.JWTUserData;
+import dev.danielsebastian.To_Do_List.enums.ProgressStatus;
 import dev.danielsebastian.To_Do_List.exception.DataNotFoundException;
 import dev.danielsebastian.To_Do_List.mapper.TaskMapper;
 import dev.danielsebastian.To_Do_List.model.Task;
@@ -20,7 +20,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -40,12 +40,12 @@ public class TaskService {
         JWTUserData principal = (JWTUserData) auth.getPrincipal();
 
         User user = userRepository.findById(principal.id()).orElseThrow(() -> new DataNotFoundException("User not found"));
+        List<User> users = new ArrayList<>();
 
-        task.setUsers(
-                Arrays.asList(
-                        user
-                )
-        );
+        List<User> usersUpdated = this.filterUserIds(users, taskRequest.users());
+
+        users.add(user);
+        task.setUsers(usersUpdated);
         Task save = taskRepository.save(task);
 
         return taskMapper.toTaskResponse(save);
@@ -69,9 +69,21 @@ public class TaskService {
     }
 
     @Transactional
-    public TaskResponse updateStatusTask(UUID id, TaskUpdateStatus taskUpdateStatus) {
+    public TaskResponse updateTask(UUID id, TaskRequest taskRequest) {
         Task task = taskRepository.findById(id).orElseThrow(() -> new DataNotFoundException("Task not found"));
-        task.setStatus(taskUpdateStatus.status());
+
+        task.setTitle(taskRequest.title());
+        task.setDescription(taskRequest.description());
+        task.setDeadline(taskRequest.deadline());
+        task.setPriority(taskRequest.priority());
+        task.setStatus(ProgressStatus.valueOf(taskRequest.status()));
+
+        List<User> users = task.getUsers();
+
+        List<User> usersUpdated = this.filterUserIds(users, taskRequest.users());
+
+        task.setUsers(usersUpdated);
+
         Task save = taskRepository.save(task);
         return taskMapper.toTaskResponse(save);
     }
@@ -80,6 +92,25 @@ public class TaskService {
     public void deleteTask(UUID id) {
         Task task = taskRepository.findById(id).orElseThrow(() -> new DataNotFoundException("Task not found"));
         taskRepository.delete(task);
+    }
+
+    private List<User> filterUserIds(List<User> users, List<UUID> ids) {
+        if (ids != null && !ids.isEmpty()) {
+            for (UUID user : ids) {
+                User userFound = userRepository.findById(user).orElseThrow(() -> new DataNotFoundException("User not found"));
+
+                //Verifica se o user já está na lista e continua
+                if (users.contains(userFound)) {
+                    continue;
+                }
+
+                users.add(userFound);
+            }
+        } else {
+            users.clear();
+        }
+
+        return users;
     }
 
 }
