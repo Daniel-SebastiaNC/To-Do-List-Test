@@ -4,6 +4,7 @@ import dev.danielsebastian.To_Do_List.dto.user.TokenDto;
 import dev.danielsebastian.To_Do_List.dto.user.UserLoginRequest;
 import dev.danielsebastian.To_Do_List.dto.user.UserRegisterRequest;
 import dev.danielsebastian.To_Do_List.dto.user.UserResponse;
+import dev.danielsebastian.To_Do_List.exception.UsernameOrPasswordInvaldException;
 import dev.danielsebastian.To_Do_List.model.User;
 import dev.danielsebastian.To_Do_List.security.TokenService;
 import dev.danielsebastian.To_Do_List.service.UserService;
@@ -44,7 +45,7 @@ public class UserController {
             return ResponseEntity.ok(new TokenDto(token));
 
         } catch (BadCredentialsException exception){
-            throw new RuntimeException("Usuário ou Senha invalidos");
+            throw new UsernameOrPasswordInvaldException("Username or password invalid");
         }
 
     }
