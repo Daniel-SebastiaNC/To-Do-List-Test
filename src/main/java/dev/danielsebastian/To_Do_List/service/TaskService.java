@@ -76,4 +76,10 @@ public class TaskService {
         return taskMapper.toTaskResponse(save);
     }
 
+    @Transactional
+    public void deleteTask(UUID id) {
+        Task task = taskRepository.findById(id).orElseThrow(() -> new DataNotFoundException("Task not found"));
+        taskRepository.delete(task);
+    }
+
 }
