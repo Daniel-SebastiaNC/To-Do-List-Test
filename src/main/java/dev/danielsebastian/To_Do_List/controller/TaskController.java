@@ -2,6 +2,7 @@ package dev.danielsebastian.To_Do_List.controller;
 
 import dev.danielsebastian.To_Do_List.dto.task.TaskRequest;
 import dev.danielsebastian.To_Do_List.dto.task.TaskResponse;
+import dev.danielsebastian.To_Do_List.enums.ProgressStatus;
 import dev.danielsebastian.To_Do_List.service.TaskService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -24,7 +25,13 @@ public class TaskController {
     }
 
     @GetMapping("/all")
-    public ResponseEntity<List<TaskResponse>> getAllTasks(Pageable pageable) {
-        return ResponseEntity.ok(taskService.getAllTasks(pageable));
+    public ResponseEntity<List<TaskResponse>> getAllTasks(
+            Pageable pageable,
+            @RequestParam(required = false) String status,
+            @RequestParam(required = false) Short priority,
+            @RequestParam(required = false) String deadline
+    ) {
+
+        return ResponseEntity.ok(taskService.getAllTasks(pageable, status, priority, deadline));
     }
 }

@@ -17,6 +17,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 
@@ -47,8 +49,20 @@ public class TaskService {
         return taskMapper.toTaskResponse(save);
     }
 
-    public List<TaskResponse> getAllTasks(Pageable pageable) {
-        Page<Task> all = taskRepository.findAllByOrderByPriorityDesc(pageable);
+    public List<TaskResponse> getAllTasks(Pageable pageable, String  status, Short priority, String deadline) {
+
+        LocalDate deadlineDate = null;
+        LocalDateTime startDay = null;
+        LocalDateTime endDay = null;
+        if (deadline != null && !deadline.isEmpty()) {
+            deadlineDate = LocalDate.parse(deadline);
+
+            startDay = deadlineDate.atStartOfDay();
+            endDay = deadlineDate.plusDays(1).atStartOfDay();
+        }
+
+        Page<Task> all = taskRepository.findByFilters(status, priority, startDay, endDay, pageable);
+
         return all.stream().map(taskMapper::toTaskResponse).toList();
     }
 
