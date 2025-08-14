@@ -3,6 +3,7 @@ package dev.danielsebastian.To_Do_List.controller;
 import dev.danielsebastian.To_Do_List.dto.task.TaskRequest;
 import dev.danielsebastian.To_Do_List.dto.task.TaskResponse;
 import dev.danielsebastian.To_Do_List.service.TaskService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -20,7 +21,7 @@ public class TaskController {
     private final TaskService taskService;
 
     @PostMapping("/create")
-    public ResponseEntity<TaskResponse> createTask(@RequestBody TaskRequest task) {
+    public ResponseEntity<TaskResponse> createTask(@Valid @RequestBody TaskRequest task) {
         return ResponseEntity.status(HttpStatus.CREATED).body(taskService.createTask(task));
     }
 
@@ -36,7 +37,7 @@ public class TaskController {
     }
 
     @PutMapping("/update/{id}")
-    public ResponseEntity<TaskResponse> updateTaskStatus(@PathVariable UUID id, @RequestBody TaskRequest task) {
+    public ResponseEntity<TaskResponse> updateTaskStatus(@PathVariable UUID id, @Valid @RequestBody TaskRequest task) {
         return ResponseEntity.ok(taskService.updateTask(id, task));
     }
 

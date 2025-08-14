@@ -3,6 +3,7 @@ package dev.danielsebastian.To_Do_List.controller;
 import dev.danielsebastian.To_Do_List.dto.task_board.TaskBoardRequest;
 import dev.danielsebastian.To_Do_List.dto.task_board.TaskBoardResponse;
 import dev.danielsebastian.To_Do_List.service.TaskBoardService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -20,7 +21,7 @@ public class TaskBoardController {
     private final TaskBoardService taskBoardService;
 
     @PostMapping("/create")
-    public ResponseEntity<TaskBoardResponse> createTaskBoard(@RequestBody TaskBoardRequest taskBoardRequest) {
+    public ResponseEntity<TaskBoardResponse> createTaskBoard(@Valid @RequestBody TaskBoardRequest taskBoardRequest) {
         return ResponseEntity.status(HttpStatus.CREATED).body(taskBoardService.createTaskBoard(taskBoardRequest));
     }
 
@@ -30,7 +31,7 @@ public class TaskBoardController {
     }
 
     @PutMapping("/update/{id}")
-    public ResponseEntity<TaskBoardResponse> updateTaskBoard(@PathVariable UUID id, @RequestBody TaskBoardRequest taskBoardRequest) {
+    public ResponseEntity<TaskBoardResponse> updateTaskBoard(@PathVariable UUID id, @Valid @RequestBody TaskBoardRequest taskBoardRequest) {
         return ResponseEntity.ok(taskBoardService.updateTaskBoard(id, taskBoardRequest));
     }
 

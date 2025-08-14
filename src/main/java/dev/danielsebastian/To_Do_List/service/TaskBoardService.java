@@ -3,6 +3,7 @@ package dev.danielsebastian.To_Do_List.service;
 import dev.danielsebastian.To_Do_List.dto.task_board.TaskBoardRequest;
 import dev.danielsebastian.To_Do_List.dto.task_board.TaskBoardResponse;
 import dev.danielsebastian.To_Do_List.enums.ProgressStatus;
+import dev.danielsebastian.To_Do_List.exception.DataAlreadyExistsException;
 import dev.danielsebastian.To_Do_List.exception.DataNotFoundException;
 import dev.danielsebastian.To_Do_List.exception.NeedCompledAllTasksException;
 import dev.danielsebastian.To_Do_List.mapper.TaskBoardMapper;
@@ -32,9 +33,9 @@ public class TaskBoardService {
         TaskBoard taskBoard = taskBoardMapper.toTaskBoard(taskBoardRequest);
 
         List<Task> tasks = new ArrayList<>();
-        tasks = this.filterTasks(tasks, taskBoardRequest.tasks(), taskBoard);
+        List<Task> tasksUpdate = this.filterTasks(tasks, taskBoardRequest.tasks(), taskBoard);
 
-        taskBoard.setTasks(tasks);
+        taskBoard.setTasks(tasksUpdate);
 
         TaskBoard save = taskBoardRepository.save(taskBoard);
 
@@ -80,12 +81,16 @@ public class TaskBoardService {
     }
 
     private List<Task> filterTasks(List<Task> tasks, List<UUID> taskIds, TaskBoard taskBoard) {
-        if (taskIds != null && !tasks.isEmpty()) {
+        if (taskIds != null && !taskIds.isEmpty()) {
             for (UUID task : taskIds) {
                 Task taskFound = taskRepository.findById(task).orElseThrow(() -> new DataNotFoundException("Task not found"));
 
                 if (tasks.contains(taskFound)) {
                     continue;
+                }
+
+                if (taskFound.getTaskBoard() != null) {
+                    throw new DataAlreadyExistsException("Task is already on a task board");
                 }
 
                 taskFound.setTaskBoard(taskBoard);
@@ -100,7 +105,7 @@ public class TaskBoardService {
 
     private void tasksAreCompleted(TaskBoard taskBoard) {
         for (Task task : taskBoard.getTasks()) {
-            if (task.getStatus() != ProgressStatus.COMPLETED || task.getStatus() == ProgressStatus.CANCELED) {
+            if (task.getStatus() != ProgressStatus.COMPLETED || task.getStatus() != ProgressStatus.CANCELED) {
                 throw new NeedCompledAllTasksException("Some tasks were not completed or canceled");
             }
         }
