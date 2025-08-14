@@ -8,19 +8,17 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 
-import java.io.Serial;
 import java.io.Serializable;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
 @Entity
-@Table(name = "tb_task")
+@Table(name = "tb_task_board")
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-public class Task implements Serializable {
-    @Serial
+public class TaskBoard implements Serializable {
+
     private static final long serialVersionUID = 1L;
 
     @Id
@@ -29,26 +27,11 @@ public class Task implements Serializable {
 
     private String title;
 
-    private String description;
-
-    private LocalDateTime deadline;
-
     @Enumerated(EnumType.STRING)
     @JdbcTypeCode(SqlTypes.NAMED_ENUM)
     @Column(columnDefinition = "progress_status")
     private ProgressStatus status;
 
-    private short priority;
-
-    @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(
-            name = "tb_task_user",
-            joinColumns = @JoinColumn(name = "task_id"),
-            inverseJoinColumns = @JoinColumn(name = "user_id")
-    )
-    private List<User> users;
-
-    @ManyToOne
-    @JoinColumn(name = "task_board_id")
-    private TaskBoard taskBoard;
+    @OneToMany(mappedBy = "taskBoard")
+    List<Task> tasks;
 }
