@@ -47,4 +47,13 @@ public class HandlerExceptions {
 
         return errors;
     }
+
+    @ExceptionHandler(DataAlreadyExistsException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public Map<String, Object> exceptionHandlerDataAlreadyExistsException(DataAlreadyExistsException e) {
+        Map<String, Object> errors = new HashMap<>();
+        errors.put("message", e.getMessage());
+        errors.put("error", "Data already exists");
+        return errors;
+    }
 }
