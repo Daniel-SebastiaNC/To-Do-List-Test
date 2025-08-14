@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/task-board")
@@ -26,5 +27,10 @@ public class TaskBoardController {
     @GetMapping("/all")
     public ResponseEntity<List<TaskBoardResponse>> getAllTaskBoards(Pageable pageable) {
         return ResponseEntity.ok(taskBoardService.getAllTaskBoards(pageable));
+    }
+
+    @PutMapping("/update/{id}")
+    public ResponseEntity<TaskBoardResponse> updateTaskBoard(@PathVariable UUID id, @RequestBody TaskBoardRequest taskBoardRequest) {
+        return ResponseEntity.ok(taskBoardService.updateTaskBoard(id, taskBoardRequest));
     }
 }
