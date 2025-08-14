@@ -23,13 +23,23 @@ public class HandlerExceptions {
 
     @ExceptionHandler(UsernameOrPasswordInvaldException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public String handleBadRequestException(UsernameOrPasswordInvaldException e){
+    public String handlerBadRequestException(UsernameOrPasswordInvaldException e){
         return e.getMessage();
     }
 
+    @ExceptionHandler(NeedCompledAllTasksException.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public Map<String, Object> exceptionHandlerDataNotFoundException(NeedCompledAllTasksException e) {
+        Map<String, Object> errors = new HashMap<>();
+        errors.put("message", e.getMessage());
+        errors.put("error", "Tasks must be completed yet");
+        return errors;
+    }
+
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public Map<String, String> handleArgumentNotValidException(MethodArgumentNotValidException e) {
+    public Map<String, String> handlerArgumentNotValidException(MethodArgumentNotValidException e) {
         Map<String, String> errors = new HashMap<>();
         e.getBindingResult().getAllErrors().forEach((error) -> {
             errors.put(((FieldError) error).getField(), error.getDefaultMessage());
