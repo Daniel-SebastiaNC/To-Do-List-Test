@@ -1,0 +1,1 @@
+ALTER TABLE tb_user DROP CONSTRAINT tb_user_username_key;
