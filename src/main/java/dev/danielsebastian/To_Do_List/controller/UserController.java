@@ -28,7 +28,7 @@ public class UserController {
     private final TokenService tokenService;
 
     @PostMapping("/register")
-    public ResponseEntity<UserResponse> register(@RequestBody UserRegisterRequest user) {
+    public ResponseEntity<UserResponse> register(@Valid @RequestBody UserRegisterRequest user) {
         return ResponseEntity.status(HttpStatus.CREATED).body(userService.registerUser(user));
     }
 
