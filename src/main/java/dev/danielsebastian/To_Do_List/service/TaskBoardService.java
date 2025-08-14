@@ -9,6 +9,8 @@ import dev.danielsebastian.To_Do_List.model.TaskBoard;
 import dev.danielsebastian.To_Do_List.repository.TaskBoardRepository;
 import dev.danielsebastian.To_Do_List.repository.TaskRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -31,6 +33,7 @@ public class TaskBoardService {
             for (UUID task : taskBoardRequest.tasks()) {
                 Task taskFound = taskRepository.findById(task).orElseThrow(() -> new DataNotFoundException("Task not found"));
 
+                taskFound.setTaskBoard(taskBoard);
                 tasks.add(taskFound);
             }
         }
@@ -40,5 +43,10 @@ public class TaskBoardService {
         TaskBoard save = taskBoardRepository.save(taskBoard);
 
         return taskBoardMapper.toTaskBoardResponse(save);
+    }
+
+    public List<TaskBoardResponse> getAllTaskBoards(Pageable pageable) {
+        Page<TaskBoard> all = taskBoardRepository.findAll(pageable);
+        return all.stream().map(taskBoardMapper::toTaskBoardResponse).toList();
     }
 }
