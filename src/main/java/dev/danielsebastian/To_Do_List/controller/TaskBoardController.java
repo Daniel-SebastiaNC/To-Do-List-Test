@@ -33,4 +33,10 @@ public class TaskBoardController {
     public ResponseEntity<TaskBoardResponse> updateTaskBoard(@PathVariable UUID id, @RequestBody TaskBoardRequest taskBoardRequest) {
         return ResponseEntity.ok(taskBoardService.updateTaskBoard(id, taskBoardRequest));
     }
+
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<Void> deleteTaskBoard(@PathVariable UUID id) {
+        taskBoardService.deleteTaskBoard(id);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
 }

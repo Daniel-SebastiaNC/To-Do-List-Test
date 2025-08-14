@@ -67,6 +67,18 @@ public class TaskBoardService {
         return taskBoardMapper.toTaskBoardResponse(taskBoardFound);
     }
 
+    @Transactional
+    public void deleteTaskBoard(UUID id) {
+        TaskBoard taskBoardFound = taskBoardRepository.findById(id).orElseThrow(() -> new DataNotFoundException("Task Board not found"));
+        for (Task task : taskBoardFound.getTasks()) {
+            if (task.getStatus() != ProgressStatus.COMPLETED || task.getStatus() != ProgressStatus.CANCELED) {
+                task.setTaskBoard(null);
+            }
+            taskRepository.delete(task);
+        }
+        taskBoardRepository.delete(taskBoardFound);
+    }
+
     private List<Task> filterTasks(List<Task> tasks, List<UUID> taskIds, TaskBoard taskBoard) {
         if (taskIds != null && !tasks.isEmpty()) {
             for (UUID task : taskIds) {
